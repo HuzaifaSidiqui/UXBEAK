@@ -1,80 +1,50 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { generateText } from "ai"
-import { openai } from "@ai-sdk/openai"
 
 export async function POST(request: NextRequest) {
   try {
     const { sessionData, pageData } = await request.json()
 
-    // Prepare data for AI analysis
-    const analysisPrompt = `
-    Analyze the following UX data and provide specific, actionable insights:
-    
-    Session Data:
-    - Total sessions: ${sessionData?.totalSessions || 0}
-    - Average session duration: ${sessionData?.avgDuration || 0} seconds
-    - Bounce rate: ${sessionData?.bounceRate || 0}%
-    - Pages per session: ${sessionData?.pagesPerSession || 0}
-    
-    Page Data:
-    - Click patterns: ${JSON.stringify(pageData?.clicks || [])}
-    - Scroll depth: ${pageData?.scrollDepth || 0}%
-    - Form interactions: ${JSON.stringify(pageData?.forms || [])}
-    
-    Please provide:
-    1. Top 3 UX issues identified
-    2. Specific recommendations for each issue
-    3. Potential impact of fixing each issue
-    4. CSS/HTML code suggestions where applicable
-    
-    Format as JSON with this structure:
-    {
-      "insights": [
+    // Mock AI analysis response for now
+    const mockInsights = {
+      insights: [
         {
-          "title": "Issue title",
-          "description": "Detailed description",
-          "severity": "critical|high|medium|low",
-          "category": "navigation|conversion|engagement|performance",
-          "recommendation": "Specific recommendation",
-          "codefix": "CSS/HTML code suggestion (optional)",
-          "impact": "Expected impact",
-          "confidence": 85
-        }
-      ]
-    }
-    `
-
-    const { text } = await generateText({
-      model: openai("gpt-4o"),
-      prompt: analysisPrompt,
-      system:
-        "You are a UX expert analyzing user behavior data. Provide specific, actionable insights based on the data provided.",
-    })
-
-    // Parse the AI response
-    let insights
-    try {
-      insights = JSON.parse(text)
-    } catch (parseError) {
-      // Fallback if JSON parsing fails
-      insights = {
-        insights: [
-          {
-            title: "AI Analysis Generated",
-            description: text.substring(0, 200) + "...",
-            severity: "medium",
-            category: "engagement",
-            recommendation: "Review the full AI analysis for detailed recommendations",
-            impact: "Varies based on implementation",
-            confidence: 75,
-          },
-        ],
-      }
+          title: "Navigation confusion detected",
+          description:
+            "Users are spending excessive time hovering over navigation elements, indicating unclear labeling or structure.",
+          severity: "high",
+          category: "navigation",
+          recommendation:
+            "Simplify navigation labels and consider adding tooltips or descriptions for complex menu items.",
+          impact: "Could improve task completion by 25%",
+          confidence: 87,
+        },
+        {
+          title: "CTA button visibility issues",
+          description:
+            "Primary call-to-action buttons are receiving lower click rates than expected based on user attention patterns.",
+          severity: "critical",
+          category: "conversion",
+          recommendation:
+            "Increase button contrast, size, or consider repositioning to a more prominent location on the page.",
+          impact: "Potential 15-20% increase in conversions",
+          confidence: 92,
+        },
+        {
+          title: "Form abandonment pattern",
+          description: "High dropout rate detected in multi-step forms, particularly at the third step.",
+          severity: "medium",
+          category: "conversion",
+          recommendation:
+            "Implement progress indicators and consider reducing form fields or breaking into smaller steps.",
+          impact: "Could reduce form abandonment by 30%",
+          confidence: 78,
+        },
+      ],
     }
 
-    return NextResponse.json(insights)
+    return NextResponse.json(mockInsights)
   } catch (error) {
-    console.error("AI Analysis error:", error)
+    console.error("Analysis error:", error)
     return NextResponse.json(
       {
         error: "Failed to analyze UX data",

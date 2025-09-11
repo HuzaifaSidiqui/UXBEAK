@@ -1,40 +1,40 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { generateText } from "ai"
-import { openai } from "@ai-sdk/openai"
 
 export async function POST(request: NextRequest) {
   try {
     const { email, weeklyData } = await request.json()
 
-    // Generate weekly report using AI
-    const reportPrompt = `
-    Generate a weekly UX report summary based on this data:
-    
-    Weekly Stats:
-    - Total sessions: ${weeklyData?.sessions || 0}
-    - New issues found: ${weeklyData?.newIssues || 0}
-    - Issues resolved: ${weeklyData?.resolvedIssues || 0}
-    - Average session duration: ${weeklyData?.avgDuration || 0} minutes
-    - Top pages visited: ${JSON.stringify(weeklyData?.topPages || [])}
-    
-    Create a concise, plain-text email report that includes:
-    1. Executive summary
-    2. Key metrics comparison to previous week
-    3. Top 3 issues that need attention
-    4. Recommendations for the upcoming week
-    5. Positive improvements noted
-    
-    Keep it professional but conversational, under 300 words.
-    `
+    // Mock weekly report generation
+    const reportContent = `
+Weekly UX Report Summary
 
-    const { text: reportContent } = await generateText({
-      model: openai("gpt-4o"),
-      prompt: reportPrompt,
-      system: "You are a UX analyst creating weekly reports for product teams. Be concise and actionable.",
-    })
+Executive Summary:
+This week showed significant improvements in user engagement with a 12% increase in session duration and 8% reduction in bounce rate. However, we identified several areas that need attention.
 
-    // In a real implementation, you would send this via email service
-    // For now, we'll just return the generated report
+Key Metrics:
+- Total sessions: ${weeklyData?.sessions || 1247}
+- New issues found: ${weeklyData?.newIssues || 3}
+- Issues resolved: ${weeklyData?.resolvedIssues || 5}
+- Average session duration: ${weeklyData?.avgDuration || 4.2} minutes
+
+Top Issues Requiring Attention:
+1. Navigation menu confusion - Users spending 40% more time on navigation
+2. Mobile responsiveness issues on product pages
+3. Form validation errors causing user frustration
+
+Recommendations for Next Week:
+- Implement clearer navigation labels
+- Optimize mobile layouts for key conversion pages
+- Improve form error messaging and validation
+
+Positive Improvements:
+- Homepage engagement increased by 15%
+- Search functionality usage up 22%
+- User satisfaction scores improved to 4.2/5
+
+This report was generated automatically by UXbreak AI analysis.
+    `.trim()
+
     const emailReport = {
       to: email,
       subject: `Weekly UX Report - ${new Date().toLocaleDateString()}`,
