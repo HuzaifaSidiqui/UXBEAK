@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
     const decoded = await admin.auth().verifyIdToken(token);
 
     // 🔹 Call internal PostHog events API
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://uxbeak.vercel.app";
     const res = await fetch(`${baseUrl}/api/posthog/events`, {
       headers: { Authorization: `Bearer ${token}` },
     });
