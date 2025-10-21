@@ -41,8 +41,8 @@ export async function GET(request: NextRequest) {
       recentEvents: data.totalEvents,
       lastEvent: data.lastEvent,
       message: hasEvents
-        ? "✅ PostHog tracking is working!"
-        : "⚠️ No events detected yet. Install the tracking script and generate some traffic.",
+        ? "PostHog tracking is working!"
+        : "No events detected yet. Install the tracking script and generate some traffic.",
     });
   } catch (error: any) {
     console.error("Verify tracking error:", error);
