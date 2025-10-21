@@ -34,11 +34,11 @@ export async function GET(request: NextRequest) {
     }
 
     const data = await res.json();
-    const hasEvents = data.recentEvents > 0;
+    const hasEvents = data.totalEvents > 0;
 
     return NextResponse.json({
       isTracking: hasEvents,
-      recentEvents: data.recentEvents,
+      recentEvents: data.totalEvents,
       lastEvent: data.lastEvent,
       message: hasEvents
         ? "✅ PostHog tracking is working!"
